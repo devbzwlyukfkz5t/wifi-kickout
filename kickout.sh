@@ -3,7 +3,7 @@
 ### kickout.sh #####
 
 # threshold (dBm), always negative 
-thr=-75
+thr=-68
 
 # mode (string) = "white" or "black", always minuscule !
 # black: only the clients in the blacklist can be kicked out.
@@ -38,12 +38,12 @@ function deauth ()
 }
 
 # wlanlist for multiple wlans (e.g., 5GHz/2.4GHz)
-wlanlist=$(ifconfig | grep wlan | grep -v sta | awk '{ print $1 }')
+wlanlist=$(ifconfig | grep phy | grep -v sta | awk '{ print $1 }')
 
 #loop for each wlan
 for wlan in $wlanlist
 do
-	maclist=""; maclist=$(iw $wlan station dump | grep Station | awk '{ print $2 }')
+	maclist=$(iw dev $wlan station dump | grep Station | awk '{ print $2 }')
 	#loop for each associated client (station)
 	for mac in $maclist
 	do
@@ -54,7 +54,7 @@ do
 
 		if [ $mode = "black" -a $inBlack -eq 0 ] || [ $mode = "white" -a $inWhite -ne 0 ]
 			then
-				rssi=""; rssi=$(iw $wlan station get $mac | \
+				rssi=$(iw dev $wlan station get $mac | \
 				grep "signal avg" | awk '{ print $3 }')
 				if [ $rssi -lt $thr ]
 					then
