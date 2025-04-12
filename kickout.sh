@@ -38,7 +38,7 @@ function deauth ()
 }
 
 # wlanlist for multiple wlans (e.g., 5GHz/2.4GHz)
-wlanlist=$(ifconfig | grep phy | grep -v sta | awk '{ print $1 }')
+wlanlist=$(ifconfig | grep -e phy -e wlan | grep -v sta | awk '{ print $1 }')
 
 #loop for each wlan
 for wlan in $wlanlist
